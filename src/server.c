@@ -1,23 +1,27 @@
 #include "../include/server.h"
 
-
-int server_run()
+/*
+*运行服务器
+*/
+int RunServer()
 {
-    int sockfd,err;
-    char  hostname[128];
-    struct  addrinfo *ailist,*aip;
-    struct  addrinfo hint;
-    struct sockaddr_in servaddr; //主机地址
+    int sockfd;
+    //主机地址
+    struct sockaddr_in servaddr; 
     
     // 清零
     memset( &servaddr,0,sizeof(servaddr) );
-    // 填充地址信息
+    // 选择协议
     servaddr.sin_family = AF_INET;  
-    servaddr.sin_port = htons(SERVER_PORT);  
-    inet_pton(AF_INET, "127.0.0.1", &servaddr.sin_addr);  
+    // 设置监听端口
+    servaddr.sin_port = htons(LISTEN_PORT); 
+    // 设置监听地址
+    inet_pton(AF_INET, LISTEN_ADDR, &servaddr.sin_addr);  
    
-    if ((sockfd = initserver(SOCK_STREAM, (struct sockaddr *) &servaddr, 
+    // 初始化一个套接字、绑定地址、设置监听端口
+    if ((sockfd = InitServer(SOCK_STREAM, (struct sockaddr *) &servaddr, 
         sizeof(servaddr), QLEN)) >= 0) {
+        /*如果成功返回一个监听套接字，则调用accept函数接受请求*/
         serve(sockfd);
         exit(0);
     }
@@ -38,8 +42,7 @@ int server_run()
  *
  * @author 代码摘自《Unix环境高级编程 第3版》
 */ 
-int
-initserver(int type, const struct sockaddr *addr, socklen_t alen,
+int InitServer(int type, const struct sockaddr *addr, socklen_t alen,
   int qlen)
 {
 	int fd, err;
@@ -69,9 +72,7 @@ errout:
 }
 
 // 对文件描述符设置执行时关闭
-int
-set_cloexec(int fd)
-{
+int set_cloexec(int fd){
 	int		val;
 
 	if ((val = fcntl(fd, F_GETFD, 0)) < 0)
@@ -82,16 +83,16 @@ set_cloexec(int fd)
 	return(fcntl(fd, F_SETFD, val));
 }
 
-void
-serve(int sockfd)
+void serve(int sockfd)
 {
 
 	int		clfd;
-	FILE	*fp;
 	char	*buf;
     int sendbytes;
 	set_cloexec(sockfd);
+
 	for (;;) {
+
 		if ((clfd = accept(sockfd, NULL, NULL)) < 0) {
 			syslog(LOG_ERR, "accept error: %s",
 			  strerror(errno));
@@ -99,17 +100,17 @@ serve(int sockfd)
 		}
 		set_cloexec(clfd);
 
-        buf = "hello,Mr.Lawrence";
+        buf = "hello,Mr.Lawrence.";
         // 发送消息
-		if((sendbytes = send(clfd, buf, 100, 0))<0){
+		if((sendbytes = send(clfd, buf, 17, 0))<0){
             syslog(LOG_ERR, "send error: %s",
               strerror(errno));
             exit(1);
         }else{
-            // printf("数据发送成功");
+            printf("数据发送成功");
         }
 
-		close(clfd);
+		// close(clfd);
 	}
 }
 
