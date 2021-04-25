@@ -1,16 +1,20 @@
 .PHONY:clean
 CC = gcc
 CFLAGS = -Wall -g 
-OBJ = main.o error.o server.o task.o
+OBJ = main.o error.o server.o task.o log.o
 vpath %.c src
 vpath %.h include
 
-server:$(OBJ)
+qserver:$(OBJ)
 	$(CC) $(CFLAGS) $^ -o $@
-	rm -f  *.o 
+	@echo "清理中间文件"
+	@rm -f  *.o 
+	@mv qserver  bin/
+	@echo "编译完成"
 #%.o:%.c
 .c.o:
 	$(CC) $(CFLAGS) -c $< -o $@
 
 clean:
-	rm -f  *.o 
+	@rm -f  *.o 
+	@echo "clean complete"

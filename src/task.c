@@ -7,11 +7,9 @@ int GetProcessNumber()
 }
 
 // 返回当前主机的时间
-char *GetHostTime()
+void GetHostTime(char *cTimeStr)
 {
-	char  cNowTime[20];
-	
-	return cNowTime;
+	return;
 }
 
 /*生成一个http响应报文*/

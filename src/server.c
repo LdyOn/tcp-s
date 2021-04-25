@@ -1,5 +1,10 @@
 #include "../include/server.h"
 
+
+extern const int LISTEN_PORT;
+extern const int QLEN;
+extern const char *LISTEN_ADDR;
+extern const char *LOG_DIR;
 /*
 *运行服务器
 */
@@ -8,9 +13,8 @@ int RunServer()
     int sockfd;
     //主机地址
     struct sockaddr_in servaddr; 
-    
-    // 清零
-    memset( &servaddr,0,sizeof(servaddr) );
+
+    memset( &servaddr, 0, sizeof(servaddr) );
     // 选择协议
     servaddr.sin_family = AF_INET;  
     // 设置监听端口
@@ -72,7 +76,7 @@ errout:
 }
 
 // 对文件描述符设置执行时关闭
-int set_cloexec(int fd){
+int SetCloexec(int fd){
 	int		val;
 
 	if ((val = fcntl(fd, F_GETFD, 0)) < 0)
@@ -89,7 +93,7 @@ void serve(int sockfd)
 	int		clfd;
 	char	*buf;
     int sendbytes;
-	set_cloexec(sockfd);
+	SetCloexec(sockfd);
 
 	for (;;) {
 
@@ -98,7 +102,7 @@ void serve(int sockfd)
 			  strerror(errno));
 			exit(1);
 		}
-		set_cloexec(clfd);
+		SetCloexec(clfd);
 
         buf = "hello,Mr.Lawrence.";
         // 发送消息

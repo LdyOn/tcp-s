@@ -1,7 +1,7 @@
-#include <stdio.h>
+#include "apue.h"
 
-#ifndef SERVER_HEADER
-#define SERVER_HEADER
-#include  "server.h"
-#endif
 
+/*函数声明*/
+void ParseArgs(int argc, char const *argv);
+int RunServer();
+void CreateLogDir();
