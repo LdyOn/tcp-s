@@ -18,8 +18,12 @@ const char *LOG_DIR = "/vagrant/qserver/logs";//日志目录
 
 int main(int argc, char const *argv[])
 {
+	FILE *fp = NULL;
 	// 创建日志目录
 	CreateLogDir();
+	fp = OpenLogFile("test.logs");
+	fputs("Hello,World\n",fp);
+	return 0;
 	// 解析参数
 	// 运行服务器
 	RunServer();

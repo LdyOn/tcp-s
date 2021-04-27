@@ -5,3 +5,4 @@
 void ParseArgs(int argc, char const *argv);
 int RunServer();
 void CreateLogDir();
+FILE *OpenLogFile(char *filename);

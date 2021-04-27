@@ -6,11 +6,24 @@
 
 
 extern char *LOG_DIR;
-/*打开一个日志文件，返回文件指针；若文件不存在则创建*/
+/*以追加写的方式打开一个日志文件，返回文件指针；若文件不存在则创建*/
 FILE *OpenLogFile(char *filename)
 {
+	int len;
+	char filepath[512]; 
 	FILE  *fp = NULL;
-	printf("%s", LOG_DIR);
+
+	len = strlen(LOG_DIR);
+    strncpy(filepath, LOG_DIR, 512);
+    
+    if(*(LOG_DIR+len -1) !='/'){
+    	strcat(filepath, "/");
+    }
+    strcat(filepath, filename);
+	
+	// 在文件尾追加
+	fp = fopen(filepath, "a+");
+
 	return fp;
 }
 
@@ -26,14 +39,14 @@ void CreateLogDir()
         if( str[i]=='/' )
         {
             str[i] = '\0';
-            if( access(str,0)!=0 )
+            if( access(str, F_OK)!=0 )
             {
                 mkdir( str, 0777 );
             }
             str[i]='/';
         }
     }
-    if( len>0 && access(str,0)!=0 )
+    if( len>0 && access(str, F_OK)!=0 )
     {
         mkdir( str, 0777 );
     }
